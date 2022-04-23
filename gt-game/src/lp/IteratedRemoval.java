@@ -134,34 +134,44 @@ public class IteratedRemoval extends Strategy {
 
         if (row) {
             for (int i = 0; i < rows; i++) {
-                if (i == index) break;
+                if (i == index) continue;
                 for (int j = 0; j < cols; j++) {
                     if (M[i][j] < min)
                         min = M[i][j];
                 }
             }
             for (int i = 0; i < rows; i++) {
-                if (i == index) break;
                 for (int j = 0; j < cols; j++) {
-                    positiveM[i][j] = M[i][j] - min;
+                    if (i == index) {
+                        positiveM[i][j] = M[i][j];
+                    } else {
+                        positiveM[i][j] = M[i][j] - min;
+                    }
                 }
             }
         } else {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    if (j == index) break;
+                    if (j == index) continue;
                     if (M[i][j] < min)
                         min = M[i][j];
                 }
             }
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    if (j == index) break;
-                    positiveM[i][j] = M[i][j] - min;
+                    if (j == index) {
+                        positiveM[i][j] = M[i][j];
+                    } else {
+                        positiveM[i][j] = M[i][j] - min;
+                    }
                 }
             }
         }
 
+        System.out.println("Make positive, " + row + ", " + index);
+        printMatrix(M);
+        System.out.println("----------------------");
+        printMatrix(positiveM);
         return positiveM;
     }
 
