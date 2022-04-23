@@ -233,9 +233,9 @@ public class IteratedRemoval extends Strategy {
                         }
                         M1[k] = M1[k + shift];
                         M2[k] = M2[k + shift];
-                        i = 0;
-                        finished = false;
                     }
+                    i = 0;
+                    finished = false;
                 }
             }
             for (int j = 0; j < cols; j++) {
@@ -250,15 +250,15 @@ public class IteratedRemoval extends Strategy {
                             }
                             M1[i][k] = M1[i][k + shift];
                             M2[i][k] = M2[i][k + shift];
-                            j = 0;
-                            finished = false;
                         }
                     }
+                    j = 0;
+                    finished = false;
                 }
             }
-            printMatrix(M1);
-            printMatrix(M2);
         }
+        printMatrix(M1);
+        printMatrix(M2);
     }
 
     public void printMatrix(int[][] M) {
