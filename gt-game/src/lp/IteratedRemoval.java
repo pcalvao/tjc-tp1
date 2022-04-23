@@ -189,13 +189,14 @@ public class IteratedRemoval extends Strategy {
     public boolean isDominated(int[][] M, boolean isRow, int index) {
         int rows = M.length;
         int cols = M[0].length;
-        double[] c = new double[rows - 1];
-        double[] lb = new double[rows - 1];
-
-        for (int i = 0; i < c.length; i++)
-            c[i] = 1.0;
 
         if (isRow) {
+            double[] c = new double[rows - 1];
+            double[] lb = new double[rows - 1];
+
+            for (int i = 0; i < c.length; i++)
+                c[i] = 1.0;
+
             double[] bi = new double[cols];
             for (int i = 0; i < bi.length; i++)
                 bi[i] = M[index][i];
@@ -227,11 +228,17 @@ public class IteratedRemoval extends Strategy {
             }
             return lp.evaluate(res) < 1;
         } else {
+            double[] c = new double[cols - 1];
+            double[] lb = new double[cols - 1];
+
+            for (int i = 0; i < c.length; i++)
+                c[i] = 1.0;
+
             double[] bi = new double[rows];
             for (int i = 0; i < bi.length; i++)
                 bi[i] = M[i][index];
 
-            double[][] A = new double[cols - 1][rows];
+            double[][] A = new double[rows][cols - 1];
             int skipped = 0;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -240,9 +247,12 @@ public class IteratedRemoval extends Strategy {
                         cols--;
                     }
                     if (j < cols)
-                        A[j][i] = M[i][j + skipped];
+                        A[i][j] = M[i][j + skipped];
                 }
+                cols++;
             }
+
+            printMatrixDouble(A);
 
             LinearProgram lp = new LinearProgram(c);
             lp.setMinProblem(true);
@@ -269,6 +279,7 @@ public class IteratedRemoval extends Strategy {
             finished = true;
             System.out.println("Checking for dominated rows...");
             for (int i = 0; i < rows; i++) {
+                if (rows == 1) break;
                 int[][] positiveM1 = makeAllPositive(M1, true, i);
                 if (isDominated(positiveM1, true, i)) {
                     System.out.printf("Removing row %d...\n", i);
@@ -285,6 +296,7 @@ public class IteratedRemoval extends Strategy {
             }
             System.out.println("Checking for dominated columns...");
             for (int i = 0; i < cols; i++) {
+                if (cols == 1) break;
                 int[][] positiveM2 = makeAllPositive(M2, false, i);
                 if (isDominated(positiveM2, false, i)) {
                     System.out.printf("Removing column %d...\n", i);
@@ -305,6 +317,15 @@ public class IteratedRemoval extends Strategy {
     }
 
     public void printMatrix(int[][] M) {
+        for (int i = 0; i < M.length; i++) {
+            for (int j = 0; j < M[0].length; j++) {
+                System.out.print(M[i][j] + " | ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void printMatrixDouble(double[][] M) {
         for (int i = 0; i < M.length; i++) {
             for (int j = 0; j < M[0].length; j++) {
                 System.out.print(M[i][j] + " | ");
