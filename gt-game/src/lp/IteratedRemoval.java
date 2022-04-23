@@ -125,7 +125,7 @@ public class IteratedRemoval extends Strategy {
         }
     }
 
-    public void makeAllPositive(int[][] M) {
+    public int[][] makeAllPositive(int[][] M) {
         int rows = M.length;
         int cols = M[0].length;
         int min = 0;
@@ -140,6 +140,7 @@ public class IteratedRemoval extends Strategy {
                 M[i][j] -= min;
             }
         }
+        return M;
     }
 
     public boolean isDominated(int[][] M, boolean isRow, int index) {
@@ -219,36 +220,36 @@ public class IteratedRemoval extends Strategy {
         boolean finished = false;
         int rows = M1.length;
         int cols = M1[0].length;
-        makeAllPositive(M1);
-        makeAllPositive(M2);
         while (!finished) {
             finished = true;
             for (int i = 0; i < rows; i++) {
-                if (isDominated(M1, true, i)) {
+                int[][] positiveM1 = makeAllPositive(M1);
+                if (isDominated(positiveM1, true, i)) {
                     int shift = 0;
                     for (int k = 0; k < rows; k++) {
                         if (k == i) {
                             shift = 1;
                             rows--;
                         }
-                        M1[i] = M1[i + shift];
-                        M2[i] = M2[i + shift];
+                        M1[k] = M1[k + shift];
+                        M2[k] = M2[k + shift];
                         i = 0;
                         finished = false;
                     }
                 }
             }
             for (int j = 0; j < cols; j++) {
-                if (isDominated(M2, false, j)) {
+                int[][] positiveM2 = makeAllPositive(M2);
+                if (isDominated(positiveM2, false, j)) {
                     int shift = 0;
                     for (int i = 0; i < rows; i++) {
                         for (int k = 0; k < cols; k++) {
                             if (k == j) {
                                 shift = 1;
+                                cols--;
                             }
-                            M1[i][j] = M1[i][j + shift];
-                            M2[i][j] = M2[i][j + shift];
-                            cols--;
+                            M1[i][k] = M1[i][k + shift];
+                            M2[i][k] = M2[i][k + shift];
                             j = 0;
                             finished = false;
                         }
