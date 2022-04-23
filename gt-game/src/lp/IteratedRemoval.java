@@ -129,6 +129,9 @@ public class IteratedRemoval extends Strategy {
         int rows = M.length;
         int cols = M[0].length;
         int min = 0;
+
+        int[][] positiveM = new int[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (M[i][j] < min)
@@ -137,10 +140,33 @@ public class IteratedRemoval extends Strategy {
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                M[i][j] -= min;
+                positiveM[i][j] = M[i][j] - min;
             }
         }
-        return M;
+        return positiveM;
+    }
+
+    public int[][] removeRow(int[][] M, int row) {
+        int[][] newM = new int[M.length - 1][M[0].length];
+        int skipped = 0;
+        for(int i = 0; i < newM.length; i++) {
+            if(i == row) skipped = 1;
+            newM[i] = M[i + skipped];
+        }
+        return newM;
+    }
+
+    public int[][] removeCol(int[][] M, int col) {
+        int[][] newM = new int[M.length][M[0].length - 1];
+        for (int i = 0; i < newM.length; i++) {
+            int skipped = 0;
+            for (int j = 0; j < newM[0].length; j++) {
+                if (j == col)
+                    skipped = 1;
+                newM[i][j] = M[i][j + skipped];
+            }
+        }
+        return newM;
     }
 
     public boolean isDominated(int[][] M, boolean isRow, int index) {
@@ -225,34 +251,20 @@ public class IteratedRemoval extends Strategy {
             for (int i = 0; i < rows; i++) {
                 int[][] positiveM1 = makeAllPositive(M1);
                 if (isDominated(positiveM1, true, i)) {
-                    int shift = 0;
-                    for (int k = 0; k < rows; k++) {
-                        if (k == i) {
-                            shift = 1;
-                            rows--;
-                        }
-                        M1[k] = M1[k + shift];
-                        M2[k] = M2[k + shift];
-                    }
+                    removeRow(M1, i);
+                    removeRow(M2, i);
                     i = 0;
                     finished = false;
+                    System.out.println("PRINTING M1");
+                    printMatrix(M1);
                 }
             }
-            for (int j = 0; j < cols; j++) {
+            for (int i = 0; i < cols; i++) {
                 int[][] positiveM2 = makeAllPositive(M2);
-                if (isDominated(positiveM2, false, j)) {
-                    int shift = 0;
-                    for (int i = 0; i < rows; i++) {
-                        for (int k = 0; k < cols; k++) {
-                            if (k == j) {
-                                shift = 1;
-                                cols--;
-                            }
-                            M1[i][k] = M1[i][k + shift];
-                            M2[i][k] = M2[i][k + shift];
-                        }
-                    }
-                    j = 0;
+                if (isDominated(positiveM2, false, i)) {
+                    removeCol(M1, i);
+                    removeCol(M2, i);
+                    i = 0;
                     finished = false;
                 }
             }
