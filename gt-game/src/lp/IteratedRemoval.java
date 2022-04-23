@@ -125,24 +125,43 @@ public class IteratedRemoval extends Strategy {
         }
     }
 
-    public int[][] makeAllPositive(int[][] M) {
+    public int[][] makeAllPositive(int[][] M, boolean row, int index) {
         int rows = M.length;
         int cols = M[0].length;
         int min = 0;
 
         int[][] positiveM = new int[rows][cols];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (M[i][j] < min)
-                    min = M[i][j];
+        if (row) {
+            for (int i = 0; i < rows; i++) {
+                if (i == index) break;
+                for (int j = 0; j < cols; j++) {
+                    if (M[i][j] < min)
+                        min = M[i][j];
+                }
+            }
+            for (int i = 0; i < rows; i++) {
+                if (i == index) break;
+                for (int j = 0; j < cols; j++) {
+                    positiveM[i][j] = M[i][j] - min;
+                }
+            }
+        } else {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    if (j == index) break;
+                    if (M[i][j] < min)
+                        min = M[i][j];
+                }
+            }
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    if (j == index) break;
+                    positiveM[i][j] = M[i][j] - min;
+                }
             }
         }
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                positiveM[i][j] = M[i][j] - min;
-            }
-        }
+
         return positiveM;
     }
 
@@ -191,7 +210,8 @@ public class IteratedRemoval extends Strategy {
                     rows--;
                 }
                 for (int j = 0; j < cols; j++) {
-                    A[j][i] = M[i + skipped][j];
+                    if (i < rows)
+                        A[j][i] = M[i + skipped][j];
                 }
             }
 
@@ -221,7 +241,8 @@ public class IteratedRemoval extends Strategy {
                         skipped = 1;
                         cols--;
                     }
-                    A[j][i] = M[i][j + skipped];
+                    if (j < cols)
+                        A[j][i] = M[i][j + skipped];
                 }
             }
 
@@ -248,24 +269,36 @@ public class IteratedRemoval extends Strategy {
         int cols = M1[0].length;
         while (!finished) {
             finished = true;
+            System.out.println("Checking for dominated rows...");
             for (int i = 0; i < rows; i++) {
-                int[][] positiveM1 = makeAllPositive(M1);
+                int[][] positiveM1 = makeAllPositive(M1, true, i);
                 if (isDominated(positiveM1, true, i)) {
-                    removeRow(M1, i);
-                    removeRow(M2, i);
-                    i = 0;
+                    System.out.printf("Removing row %d...\n", i);
+                    M1 = removeRow(M1, i);
+                    M2 = removeRow(M2, i);
+                    rows--;
+                    i = -1;
                     finished = false;
-                    System.out.println("PRINTING M1");
+                    System.out.println("PRINTING M1 AND M2");
                     printMatrix(M1);
+                    System.out.println("-------------------");
+                    printMatrix(M2);
                 }
             }
+            System.out.println("Checking for dominated columns...");
             for (int i = 0; i < cols; i++) {
-                int[][] positiveM2 = makeAllPositive(M2);
+                int[][] positiveM2 = makeAllPositive(M2, false, i);
                 if (isDominated(positiveM2, false, i)) {
-                    removeCol(M1, i);
-                    removeCol(M2, i);
-                    i = 0;
+                    System.out.printf("Removing column %d...\n", i);
+                    M1 = removeCol(M1, i);
+                    M2 = removeCol(M2, i);
+                    cols--;
+                    i = -1;
                     finished = false;
+                    System.out.println("PRINTING M1 AND M2");
+                    printMatrix(M1);
+                    System.out.println("-------------------");
+                    printMatrix(M2);
                 }
             }
         }
