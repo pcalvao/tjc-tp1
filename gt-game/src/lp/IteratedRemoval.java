@@ -140,15 +140,6 @@ public class IteratedRemoval extends Strategy {
                         min = M[i][j];
                 }
             }
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    if (i == index) {
-                        positiveM[i][j] = M[i][j];
-                    } else {
-                        positiveM[i][j] = M[i][j] - min;
-                    }
-                }
-            }
         } else {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -157,14 +148,11 @@ public class IteratedRemoval extends Strategy {
                         min = M[i][j];
                 }
             }
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    if (j == index) {
-                        positiveM[i][j] = M[i][j];
-                    } else {
-                        positiveM[i][j] = M[i][j] - min;
-                    }
-                }
+        }
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                positiveM[i][j] = M[i][j] - min;
             }
         }
 
