@@ -159,10 +159,11 @@ public class IteratedRemoval extends Strategy {
             double[][] A = new double[cols][rows - 1];
             int skipped = 0;
             for (int i = 0; i < rows; i++) {
+                if (i == index) {
+                    skipped = 1;
+                    rows--;
+                }
                 for (int j = 0; j < cols; j++) {
-                    if (i == index) {
-                        skipped = 1;
-                    }
                     A[j][i] = M[i + skipped][j];
                 }
             }
@@ -173,7 +174,9 @@ public class IteratedRemoval extends Strategy {
                 lp.addConstraint(new LinearBiggerThanEqualsConstraint(A[i], bi[i], "c" + i));
             }
             lp.setLowerbound(lb);
+            showLP(lp);
             double[] res = solveLP(lp);
+            showSolution(lp, res);
             if (res == null) {
                 return false;
             }
@@ -189,6 +192,7 @@ public class IteratedRemoval extends Strategy {
                 for (int j = 0; j < cols; j++) {
                     if (j == index) {
                         skipped = 1;
+                        cols--;
                     }
                     A[j][i] = M[i][j + skipped];
                 }
@@ -200,7 +204,9 @@ public class IteratedRemoval extends Strategy {
                 lp.addConstraint(new LinearBiggerThanEqualsConstraint(A[i], bi[i], "c" + i));
             }
             lp.setLowerbound(lb);
+            showLP(lp);
             double[] res = solveLP(lp);
+            showSolution(lp, res);
             if (res == null) {
                 return false;
             }
@@ -223,10 +229,10 @@ public class IteratedRemoval extends Strategy {
                     for (int k = 0; k < rows; k++) {
                         if (k == i) {
                             shift = 1;
+                            rows--;
                         }
                         M1[i] = M1[i + shift];
                         M2[i] = M2[i + shift];
-                        rows--;
                         i = 0;
                         finished = false;
                     }
