@@ -246,8 +246,8 @@ public class NashEquilibriumLP extends Strategy {
                 bi[i] = M[i][index];
 
             double[][] A = new double[rows][cols - 1];
-            int skipped = 0;
             for (int i = 0; i < rows; i++) {
+                int skipped = 0;
                 for (int j = 0; j < cols; j++) {
                     if (j == index) {
                         skipped = 1;

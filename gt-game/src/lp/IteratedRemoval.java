@@ -93,7 +93,7 @@ public class IteratedRemoval extends Strategy {
                 showUtility(2, U2);
                 NormalFormGame game = new NormalFormGame(U1, U2, labelsP1, labelsP2);
                 game.showGame();
-                this.iteratedRemoval(U1, U2, labelsP1, labelsP2);
+                this.iteratedRemoval(U1, U2, labelsP1, labelsP2, myStrategy);
                 try {
                     this.provideStrategy(myStrategy);
                     playComplete = true;
@@ -246,8 +246,8 @@ public class IteratedRemoval extends Strategy {
                 bi[i] = M[i][index];
 
             double[][] A = new double[rows][cols - 1];
-            int skipped = 0;
             for (int i = 0; i < rows; i++) {
+                int skipped = 0;
                 for (int j = 0; j < cols; j++) {
                     if (j == index) {
                         skipped = 1;
@@ -278,7 +278,7 @@ public class IteratedRemoval extends Strategy {
 
     }
 
-    public void iteratedRemoval(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2) {
+    public void iteratedRemoval(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2, PlayStrategy myStrategy) {
         boolean finished = false;
         int rows = M1.length;
         int cols = M1[0].length;
@@ -331,6 +331,14 @@ public class IteratedRemoval extends Strategy {
         }
         System.out.println();
         printMatrix(M2);
+
+        //Set strategy so it doesn't crash
+        for (String label : labelsP1) {
+            myStrategy.put(label, 1.0 / labelsP1.length);
+        }
+        for (String label : labelsP2) {
+            myStrategy.put(label, 1.0 / labelsP2.length);
+        }
     }
 
     public void printMatrix(int[][] M) {
