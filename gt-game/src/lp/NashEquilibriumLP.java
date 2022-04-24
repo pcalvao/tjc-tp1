@@ -312,12 +312,12 @@ public class NashEquilibriumLP extends Strategy {
                     M2 = removeCol(M2, i);
                     labelsP2 = removeLabel(labelsP2, i);
                     cols--;
-                    i = -1;
                     finished = false;
                     System.out.println("PRINTING M1 AND M2");
                     printMatrix(M1);
                     System.out.println("-------------------");
                     printMatrix(M2);
+                    break;
                 }
             }
         }
@@ -337,7 +337,7 @@ public class NashEquilibriumLP extends Strategy {
 
     //Assuming 2x2 game
     public void setNashEquilibriumStrategy(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2, PlayStrategy myStrategy) {
-        if (M1.length == 1 && M1[0].length == 1) {
+        if (labelsP1.length == 1 && labelsP2.length == 1) {
             myStrategy.put(labelsP1[0], 1.0);
             myStrategy.put(labelsP2[0], 1.0);
             return;

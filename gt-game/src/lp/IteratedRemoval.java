@@ -312,12 +312,12 @@ public class IteratedRemoval extends Strategy {
                     M2 = removeCol(M2, i);
                     labelsP2 = removeLabel(labelsP2, i);
                     cols--;
-                    i = -1;
                     finished = false;
                     System.out.println("PRINTING M1 AND M2");
                     printMatrix(M1);
                     System.out.println("-------------------");
                     printMatrix(M2);
+                    break;
                 }
             }
         }
