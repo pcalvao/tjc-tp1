@@ -340,8 +340,8 @@ public class NashEquilibriumLP extends Strategy {
         if (M1.length == 1 && M1[0].length == 1) {
             myStrategy.put(labelsP1[0], 1.0);
             myStrategy.put(labelsP2[0], 1.0);
+            return;
         }
-
 
         //P1
         double a = 0, b = 0;
