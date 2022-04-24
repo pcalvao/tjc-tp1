@@ -1,7 +1,9 @@
 package lp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import scpsolver.constraints.*;
@@ -97,7 +99,6 @@ public class IteratedRemoval extends Strategy {
                     playComplete = true;
                 } catch (InvalidStrategyException e) {
                     System.err.println("Invalid strategy: " + e.getMessage());
-                    ;
                     e.printStackTrace(System.err);
                 }
             }
@@ -184,6 +185,12 @@ public class IteratedRemoval extends Strategy {
             }
         }
         return newM;
+    }
+
+    public String[] removeLabel(String[] labels, int index) {
+        List<String> temp = new ArrayList<>(Arrays.asList(labels));
+        temp.remove(index);
+        return temp.toArray(new String[0]);
     }
 
     public boolean isDominated(int[][] M, boolean isRow, int index) {
@@ -285,6 +292,7 @@ public class IteratedRemoval extends Strategy {
                     System.out.printf("Removing row %d...\n", i);
                     M1 = removeRow(M1, i);
                     M2 = removeRow(M2, i);
+                    labelsP1 = removeLabel(labelsP1, i);
                     rows--;
                     i = -1;
                     finished = false;
@@ -302,6 +310,7 @@ public class IteratedRemoval extends Strategy {
                     System.out.printf("Removing column %d...\n", i);
                     M1 = removeCol(M1, i);
                     M2 = removeCol(M2, i);
+                    labelsP2 = removeLabel(labelsP2, i);
                     cols--;
                     i = -1;
                     finished = false;
@@ -312,7 +321,15 @@ public class IteratedRemoval extends Strategy {
                 }
             }
         }
+        for(String s : labelsP1) {
+            System.out.print(s + " ");
+        }
+        System.out.println();
         printMatrix(M1);
+        for (String s : labelsP2) {
+            System.out.print(s + " ");
+        }
+        System.out.println();
         printMatrix(M2);
     }
 
