@@ -13,7 +13,7 @@ import gametree.*;
 import play.*;
 import play.exception.InvalidStrategyException;
 
-public class NashEquilibrium extends Strategy {
+public class NashEquilibriumLP extends Strategy {
 
     @Override
     public void execute() throws InterruptedException {
@@ -93,8 +93,7 @@ public class NashEquilibrium extends Strategy {
                 showUtility(2, U2);
                 NormalFormGame game = new NormalFormGame(U1, U2, labelsP1, labelsP2);
                 game.showGame();
-                //this.iteratedRemoval(U1, U2, labelsP1, labelsP2);
-                this.setNashEquilibriumStrategy(U1, U2, labelsP1, labelsP2, myStrategy);
+                this.iteratedRemoval(U1, U2, labelsP1, labelsP2, myStrategy);
                 try {
                     this.provideStrategy(myStrategy);
                     playComplete = true;
@@ -279,7 +278,7 @@ public class NashEquilibrium extends Strategy {
 
     }
 
-    public void iteratedRemoval(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2) {
+    public void iteratedRemoval(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2, PlayStrategy myStrategy) {
         boolean finished = false;
         int rows = M1.length;
         int cols = M1[0].length;
@@ -332,10 +331,18 @@ public class NashEquilibrium extends Strategy {
         }
         System.out.println();
         printMatrix(M2);
+
+        this.setNashEquilibriumStrategy(M1, M2, labelsP1, labelsP2, myStrategy);
     }
 
     //Assuming 2x2 game
     public void setNashEquilibriumStrategy(int[][] M1, int[][] M2, String[] labelsP1, String[] labelsP2, PlayStrategy myStrategy) {
+        if (M1.length == 1 && M1[0].length == 1) {
+            myStrategy.put(labelsP1[0], 1.0);
+            myStrategy.put(labelsP2[0], 1.0);
+        }
+
+
         //P1
         double a = 0, b = 0;
         a += M2[0][0];
